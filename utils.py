@@ -11,12 +11,17 @@ def load_servers():
     return [server['server_url'] for server in data]
 
 
-def check_if_spectators(server_json:dict):
+def check_if_spectators(server_json: dict):
     spectators_count = server_json.get('message').get('SERVER_INFO').get('slots').get('8').get('current', 0)
     return spectators_count > 0
 
 
-def is_valid_username(username:str):
+def check_if_players(server_json: dict):
+    players_count = server_json.get('message').get('SERVER_PLAYERS', [])
+    return bool(players_count)
+
+
+def is_valid_username(username: str):
     load_dotenv()
     url = f'https://bf4db.com/api/player/{username}/search'
     params = {
@@ -37,7 +42,7 @@ def is_valid_username(username:str):
                 return player['id']
 
 
-def is_valid_battlelog_url(profile_url:str):
+def is_valid_battlelog_url(profile_url: str):
     load_dotenv()
     if validate_battlelog_url(profile_url):
         persona_id = get_id(profile_url)
@@ -61,30 +66,40 @@ def is_valid_battlelog_url(profile_url:str):
         return False, "Invalid Battlelog URL provided"
 
 
-def get_server_json_url(server_url:str):
+def get_server_json_url(server_url: str):
     if validate_server_url(server_url):
         return server_url + "/?json=1"
 
 
-def get_server_name(server_json:dict):
+def get_server_name(server_json: dict):
     return remove_excess_spaces(
         server_json.get('message', {}).get('SERVER_INFO', {}).get('name', 'Unknown Server Name'))
 
 
-def remove_excess_spaces(text:str):
+def get_player_name(player_data: dict):
+    return player_data.get('persona').get('user').get('username')
+
+
+def get_player_role(player_data: dict):
+    role = player_data.get('persona', {}).get('user', {}).get('presence', {}).get('playingMp', {}).get('role')
+    role_map = {1: "Soldier", 2: "Commander", 4: "Spectator"}
+    return role_map.get(role)
+
+
+def remove_excess_spaces(text: str):
     return re.sub(r'\s+', ' ', text).strip()
 
 
-def get_id(profile_url:str):
+def get_id(profile_url: str):
     return profile_url.split('/')[7]
 
 
-def validate_battlelog_url(profile_url:str):
+def validate_battlelog_url(profile_url: str):
     pattern = r'^https:\/\/battlelog\.battlefield\.com\/bf4\/soldier\/[^\/]+\/stats\/\d+\/pc\/$'
     return bool(re.match(pattern, profile_url))
 
 
-def validate_server_url(server_url:str):
+def validate_server_url(server_url: str):
     pattern = r'^https:\/\/battlelog\.battlefield\.com\/bf4\/servers\/show\/pc\/.*'
     return bool(re.match(pattern, server_url))
 

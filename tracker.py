@@ -70,10 +70,12 @@ async def find_player(player_id: int, server_url):
 
     if utils.check_if_players(server_data):
         for player in server_data.get('message').get('SERVER_PLAYERS'):
-            if player.get('personaId') == player_id:
+            if int(player.get('personaId')) == player_id:
                 username = utils.get_player_name(player)
                 role = utils.get_player_role(player)
-                return {'player_name': username, 'server_name': server_name, 'role': role}
+                return True, {'player_name': username, 'server_name': server_name, 'role': role}
+
+    return False, "Player not found in any server"
 
 
 async def fetch_player(player_id: int):
@@ -81,9 +83,8 @@ async def fetch_player(player_id: int):
     tasks = [find_player(player_id, server_url) for server_url in servers]
     results = await asyncio.gather(*tasks)
     for result in results:
-        if result:
-            if result[0]:
-                return result[1]
+        if result[0]:
+            return result[1]
     return "Player not found in any server"
 
 
@@ -103,9 +104,11 @@ async def track_player(input_value: str):
 
 
 async def main():
-    result = await track_player("SpectralSp")
+    result = await track_player("https://battlelog.battlefield.com/bf4/soldier/Hoob_AUT/stats/892281535/pc/")
     print(result)
 
 
 if __name__ == "__main__":
+    time1 = time.time()
     asyncio.run(main())
+    print(time.time() - time1)

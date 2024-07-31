@@ -39,7 +39,7 @@ def is_valid_username(username: str):
     if data['data']:
         for player in data['data']:
             if player['name'] == username:
-                return player['id']
+                return True, player['id']
 
 
 def is_valid_battlelog_url(profile_url: str):
@@ -61,7 +61,7 @@ def is_valid_battlelog_url(profile_url: str):
                 'name') == 'ERROR: Failed To Load Name':
             return False, "Invalid Battlelog URL provided"
         else:
-            return data.get('data').get('player_id')
+            return True, data.get('data').get('player_id')
     else:
         return False, "Invalid Battlelog URL provided"
 

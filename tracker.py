@@ -23,23 +23,34 @@ async def get_server_spectators(server_url: str):
         return 0, "The server currently does not have any spectators"
 
     spectators = [
-        player.get('persona').get('user').get('username')
+        utils.get_player_name(player)
         for player in server_data.get('message').get('SERVER_PLAYERS')
-        if player.get('persona', {}).get('user', {}).get('presence', {}).get('playingMp', {}).get('role') == 4
+        if utils.get_player_role(player) == "Spectator"
     ]
 
-    return {"spectators": spectators, "server_name": server_name}
+    if not spectators:
+        return True, {"spectators": "Spectator could not be determined", "server_name": server_name, }
+
+    return True, {"spectators": spectators, "server_name": server_name, "server_url": server_url}
 
 
 async def get_all_spectators():
     servers = utils.load_servers()
     tasks = [get_server_spectators(server_url) for server_url in servers]
     results = await asyncio.gather(*tasks)
-    for spectators in results:
-        if isinstance(spectators, tuple):
-            continue
-        else:
-            print(spectators)
+
+    formatted_results = []
+
+    for result in results:
+        success, data = result
+        if success:
+            formatted_results.append({
+                'server_name': data.get('server_name', 'Undefined'),
+                'server_url': data.get('server_url'),
+                'spectators': data.get('spectators', [])
+            })
+
+    return formatted_results
 
 
 async def check_server_availability(server_url: str):
@@ -73,7 +84,7 @@ async def find_player(player_id: int, server_url):
             if int(player.get('personaId')) == player_id:
                 username = utils.get_player_name(player)
                 role = utils.get_player_role(player)
-                return True, {'player_name': username, 'server_name': server_name, 'role': role}
+                return True, {'player_name': username, 'server_name': server_name, 'server_url': server_url, 'role': role}
 
     return False, "Player not found in any server"
 
@@ -85,15 +96,18 @@ async def fetch_player(player_id: int):
     for result in results:
         if result[0]:
             return result[1]
-    return "Player not found in any server"
+    return False, "Player not found in any server"
 
 
 async def track_player(input_value: str):
+    if not input_value:
+        return False, "Please enter a valid username."
     if not isinstance(input_value, str):
         return
     if utils.validate_url(input_value):
         is_valid, result = utils.is_valid_battlelog_url(input_value)
     else:
+        print(utils.is_valid_username(input_value))
         is_valid, result = utils.is_valid_username(input_value)
 
     if not is_valid:
@@ -102,13 +116,4 @@ async def track_player(input_value: str):
     player_id = int(result)
     return await fetch_player(player_id)
 
-
-async def main():
-    result = await track_player("https://battlelog.battlefield.com/bf4/soldier/Hoob_AUT/stats/892281535/pc/")
-    print(result)
-
-
-if __name__ == "__main__":
-    time1 = time.time()
-    asyncio.run(main())
-    print(time.time() - time1)
+asyncio.run(get_all_spectators())

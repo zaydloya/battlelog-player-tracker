@@ -34,12 +34,13 @@ def is_valid_username(username: str):
     }
     response = requests.request('GET', url, headers=headers, params=params)
     data = response.json()
-    if not data['data']:
+    for player in data.get('data'):
+        if player['name'] == username:
+            return True, player.get('id')
+    if not data.get('data'):
         return False, "Invalid username provided"
-    if data['data']:
-        for player in data['data']:
-            if player['name'] == username:
-                return True, player['id']
+
+    return False, "Invalid username provided"
 
 
 def is_valid_battlelog_url(profile_url: str):
@@ -83,7 +84,7 @@ def get_player_name(player_data: dict):
 def get_player_role(player_data: dict):
     role = player_data.get('persona', {}).get('user', {}).get('presence', {}).get('playingMp', {}).get('role')
     role_map = {1: "Soldier", 2: "Commander", 4: "Spectator"}
-    return role_map.get(role)
+    return role_map.get(role, "Unknown")
 
 
 def remove_excess_spaces(text: str):

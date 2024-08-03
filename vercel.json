@@ -2,15 +2,27 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/static/index.html",
-      "use": "@vercel/static"
+      "src": "api/app.py",
+      "use": "@vercel/python"
     },
     {
-      "src": "*.py",
+      "src": "api/tracker.py",
       "use": "@vercel/python"
+    },
+    {
+      "src": "api/utils.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "api/static/index.html",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
+    {
+      "src": "/",
+      "dest": "/api/static/index.html"
+    },
     {
       "src": "/api/(.*)",
       "dest": "/api/app.py"
@@ -18,10 +30,6 @@
     {
       "src": "/static/(.*)",
       "dest": "/api/static/$1"
-    },
-    {
-      "src": "/",
-      "dest": "/api/static/index.html"
     }
   ]
 }

@@ -4,18 +4,6 @@
     {
       "src": "api/app.py",
       "use": "@vercel/python"
-    },
-    {
-      "src": "api/tracker.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "api/utils.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "api/static/index.html",
-      "use": "@vercel/static"
     }
   ],
   "routes": [

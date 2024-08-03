@@ -38,9 +38,9 @@ def is_valid_username(username: str):
         if player['name'] == username:
             return True, player.get('id')
     if not data.get('data'):
-        return False, "Invalid username provided"
+        return False, "Player does not exist. Please try again."
 
-    return False, "Invalid username provided"
+    return False, "Invalid username provided."
 
 
 def is_valid_battlelog_url(profile_url: str):
@@ -85,6 +85,12 @@ def get_player_role(player_data: dict):
     role = player_data.get('persona', {}).get('user', {}).get('presence', {}).get('playingMp', {}).get('role')
     role_map = {1: "Soldier", 2: "Commander", 4: "Spectator"}
     return role_map.get(role, "Unknown")
+
+
+def get_player_url(player_data: dict):
+    name = get_player_name(player_data)
+    personaId = player_data.get('personaId')
+    return f'https://battlelog.battlefield.com/bf4/soldier/{name}/stats/{personaId}/pc/'
 
 
 def remove_excess_spaces(text: str):

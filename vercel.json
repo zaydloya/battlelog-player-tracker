@@ -21,15 +21,7 @@
   "routes": [
     {
       "src": "/",
-      "dest": "/api/static/index.html"
-    },
-    {
-      "src": "/api/(.*)",
       "dest": "/api/app.py"
-    },
-    {
-      "src": "/static/(.*)",
-      "dest": "/api/static/$1"
     }
   ]
 }

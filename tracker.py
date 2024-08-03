@@ -55,7 +55,6 @@ async def get_all_spectators():
 
 async def check_server_availability(server_url: str):
     if not utils.validate_server_url(server_url):
-
         return False, "Invalid server URL provided."
     try:
         async with aiohttp.ClientSession() as session:

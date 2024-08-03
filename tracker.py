@@ -23,13 +23,13 @@ async def get_server_spectators(server_url: str):
         return 0, "The server currently does not have any spectators"
 
     spectators = [
-        utils.get_player_name(player)
+        (utils.get_player_name(player), utils.get_player_url(player))
         for player in server_data.get('message').get('SERVER_PLAYERS')
         if utils.get_player_role(player) == "Spectator"
     ]
 
     if not spectators:
-        return True, {"spectators": "Spectator could not be determined", "server_name": server_name, }
+        return True, {"spectators": "Spectator could not be determined", "server_name": server_name, "server_url": server_url}
 
     return True, {"spectators": spectators, "server_name": server_name, "server_url": server_url}
 
@@ -54,7 +54,8 @@ async def get_all_spectators():
 
 
 async def check_server_availability(server_url: str):
-    if not utils.validate_url(server_url):
+    if not utils.validate_server_url(server_url):
+
         return False, "Invalid server URL provided."
     try:
         async with aiohttp.ClientSession() as session:
@@ -84,7 +85,8 @@ async def find_player(player_id: int, server_url):
             if int(player.get('personaId')) == player_id:
                 username = utils.get_player_name(player)
                 role = utils.get_player_role(player)
-                return True, {'player_name': username, 'server_name': server_name, 'server_url': server_url, 'role': role}
+                player_url = utils.get_player_url(player)
+                return True, {'player_name': username, 'player_url': player_url, 'server_name': server_name, 'server_url': server_url, 'role': role}
 
     return False, "Player not found in any server"
 
@@ -115,5 +117,3 @@ async def track_player(input_value: str):
 
     player_id = int(result)
     return await fetch_player(player_id)
-
-asyncio.run(get_all_spectators())

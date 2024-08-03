@@ -4,10 +4,11 @@ from tracker import track_player, get_server_spectators, get_all_spectators
 
 app = Flask(__name__, static_folder='static')
 
-# Serve the HTML file
+
 @app.route('/')
 def index():
     return send_from_directory(app.static_folder, 'index.html')
+
 
 @app.route('/track_player', methods=['POST'])
 def track_player_route():
@@ -17,6 +18,7 @@ def track_player_route():
     print('track_player response:', result)
     return jsonify(result)
 
+
 @app.route('/get_server_spectators', methods=['POST'])
 def get_server_spectators_route():
     data = request.json
@@ -25,12 +27,13 @@ def get_server_spectators_route():
     print('get_server_spectators response:', result)
     return jsonify(result)
 
+
 @app.route('/get_all_spectators', methods=['POST'])
 def get_all_spectators_route():
     result = asyncio.run(get_all_spectators())
     print(result)
     return jsonify(result)
 
-if __name__ == '__main__':
-    app.run(debug=True)
 
+if __name__ == '__main__':
+    app.run()

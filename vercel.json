@@ -20,16 +20,16 @@
   ],
   "routes": [
     {
-      "src": "/",
-      "dest": "/api/static/index.html"
-    },
-    {
-      "src": "/(.*)",
+      "src": "/api/(.*)",
       "dest": "/api/app.py"
     },
     {
       "src": "/static/(.*)",
       "dest": "/api/static/$1"
+    },
+    {
+      "src": "/",
+      "dest": "/api/static/index.html"
     }
   ]
 }

@@ -1,7 +1,6 @@
 import utils
 import asyncio
 import aiohttp
-import time
 
 
 async def fetch(session, url: str):

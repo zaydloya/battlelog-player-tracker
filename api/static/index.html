@@ -341,7 +341,7 @@
             playerLoading.style.display = 'block';
 
             const playerInput = document.getElementById('playerInput').value;
-            const response = await fetch('/track_player', {
+            const response = await fetch('/api/track_player', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ input_value: playerInput })
@@ -357,7 +357,7 @@
             spectatorsLoading.style.display = 'block';
 
             const serverInput = document.getElementById('serverInput').value;
-            const response = await fetch('/get_server_spectators', {
+            const response = await fetch('/api/get_server_spectators', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ server_url: serverInput })
@@ -372,7 +372,7 @@
             const allSpectatorsLoading = document.getElementById('allSpectatorsLoading');
             allSpectatorsLoading.style.display = 'block';
 
-            const response = await fetch('/get_all_spectators', {
+            const response = await fetch('/api/get_all_spectators', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
             });

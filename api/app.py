@@ -10,7 +10,7 @@ def index():
     return send_from_directory(app.static_folder, 'index.html')
 
 
-@app.route('/track_player', methods=['POST'])
+@app.route('/api/track_player', methods=['POST'])
 def track_player_route():
     data = request.json
     input_value = data.get('input_value')
@@ -18,7 +18,7 @@ def track_player_route():
     return jsonify(result)
 
 
-@app.route('/get_server_spectators', methods=['POST'])
+@app.route('/api/get_server_spectators', methods=['POST'])
 def get_server_spectators_route():
     data = request.json
     server_url = data.get('server_url')
@@ -26,7 +26,7 @@ def get_server_spectators_route():
     return jsonify(result)
 
 
-@app.route('/get_all_spectators', methods=['POST'])
+@app.route('/api/get_all_spectators', methods=['POST'])
 def get_all_spectators_route():
     result = asyncio.run(get_all_spectators())
     return jsonify(result)

@@ -17,7 +17,7 @@
     },
     {
       "src": "/api/(.*)",
-      "dest": "/api/app.py"
+      "dest": "/app.py"
     },
     {
       "src": "/(.*)",

@@ -27,10 +27,5 @@
       "src": "/api/get_all_spectators",
       "dest": "/api/app.py"
     }
-  ],
-  "functions": {
-    "/api/app.py": {
-      "maxDuration": 20
-    }
-  }
+  ]
 }

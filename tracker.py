@@ -107,7 +107,6 @@ async def track_player(input_value: str):
     if utils.validate_url(input_value):
         is_valid, result = utils.is_valid_battlelog_url(input_value)
     else:
-        print(utils.is_valid_username(input_value))
         is_valid, result = utils.is_valid_username(input_value)
 
     if not is_valid:

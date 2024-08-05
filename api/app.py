@@ -2,7 +2,15 @@ from flask import Flask, request, jsonify, send_from_directory
 import asyncio
 from tracker import track_player, get_server_spectators, get_all_spectators
 
+
 app = Flask(__name__, static_folder='static')
+
+
+@app.before_request
+def log_request():
+    ip_address = request.remote_addr
+    user_agent = request.user_agent.string
+    print(ip_address, user_agent)
 
 
 @app.route('/')

@@ -27,20 +27,5 @@
       "src": "/api/get_all_spectators",
       "dest": "/api/app.py"
     }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Forwarded-For",
-          "value": "${request.ip}"
-        },
-        {
-          "key": "User-Agent",
-          "value": "${request.headers.user-agent}"
-        }
-      ]
-    }
   ]
 }

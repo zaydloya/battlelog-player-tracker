@@ -385,6 +385,16 @@
         function displayTrackPlayerResult(data) {
             const container = document.getElementById('playerResult');
             container.innerHTML = '';
+            console.log(data)
+
+            if (typeof data === 'string') {
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'result-box';
+                resultDiv.innerHTML = `<p><i class="fa-solid fa-triangle-exclamation fa-beat" style="color: #dd1d4d;"></i><strong> Error: </strong> ${data}</p>`;
+                container.appendChild(resultDiv);
+                container.style.display = 'block';
+                return;
+            }
 
             if (Array.isArray(data)) {
                 if (!data[0]) {

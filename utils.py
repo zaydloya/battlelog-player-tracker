@@ -38,7 +38,7 @@ def is_valid_username(username: str):
     response = requests.request('GET', url, headers=headers, params=params)
     data = response.json()
     for player in data.get('data'):
-        if player['name'] == username:
+        if player['name'].lower() == username.lower():
             return True, player.get('id')
     if not data.get('data'):
         return False, "Player does not exist. Please try again."

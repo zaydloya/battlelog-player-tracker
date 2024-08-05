@@ -6,21 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         @font-face {
-        font-family: 'Eurostile';
-        src: url('/fonts/Eurostile.ttf') format('truetype');
-        font-weight: normal;
-        font-style: normal;
-        }
+            font-family: 'Eurostile';
+            src:url('fonts/EuroStyleNormal.woff2') format('woff2'),
+                url('fonts/EuroStyleNormal.woff') format('woff'),
+                url('fonts/EuroStyleNormal.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+          }
 
         @font-face {
-        font-family: 'Chakra Petch';
-        src: url('/fonts/ChakraPetch-Regular.ttf') format('truetype');
-        font-weight: normal;
-        font-style: normal;
-        }
+            font-family: 'Chakra Petch';
+            src: local('Chakra Petch Regular'), local('Chakra-Petch-Regular'),
+                url('fonts/ChakraPetch-Regular.woff2') format('woff2'),
+                url('fonts/ChakraPetch-Regular.woff') format('woff'),
+                url('fonts/ChakraPetch-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+          }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Eurostile', sans-serif;
             background-color: #1d2a35;
             color: #fff;
             margin: 0;
@@ -37,7 +42,7 @@
         }
 
         h1 {
-            font-family: 'Arial';
+            font-family: 'Chakra Petch';
             text-align: center;
             color: #fff;
             margin-bottom: 20px;
@@ -92,7 +97,7 @@
         }
 
         .button span {
-            font-family: 'Arial';
+            font-family: 'Chakra Petch';
             font-size: 14.5px;
             color: #fff;
         }
@@ -117,7 +122,7 @@
         }
 
         .live-button-container span {
-            font-family: 'Arial';
+            font-family: 'Chakra Petch';
             font-size: 14.5px;
             color: #fff;
             margin-left: 5px;

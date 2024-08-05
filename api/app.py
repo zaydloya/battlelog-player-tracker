@@ -23,6 +23,7 @@ def track_player_route():
     try:
         data = request.json
         input_value = data.get('input_value')
+        print(input_value)
         result = asyncio.run(track_player(input_value))
         return jsonify(result)
     except Exception as e:

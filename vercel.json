@@ -30,7 +30,7 @@
   ],
   "headers": [
     {
-      "source": "/fonts/*.tff",
+      "source": "/fonts/:path*",
       "headers": [
         {
           "key": "Content-Type",

@@ -4,6 +4,9 @@ import requests
 import os
 from dotenv import load_dotenv
 
+current_dir = os.path.dirname(__file__)
+os.chdir(current_dir)
+
 
 def load_servers():
     with open('servers.json', 'r') as file:

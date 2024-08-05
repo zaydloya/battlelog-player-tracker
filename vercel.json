@@ -27,16 +27,5 @@
       "src": "/api/get_all_spectators",
       "dest": "/api/app.py"
     }
-  ],
-  "headers": [
-    {
-      "source": "/fonts/:path*",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "font/ttf"
-        }
-      ]
-    }
   ]
 }

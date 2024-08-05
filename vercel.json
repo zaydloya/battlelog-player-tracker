@@ -16,7 +16,7 @@
       "dest": "/api/static/index.html"
     },
     {
-      "src": "/api/*",
+      "src": "/api/track_player",
       "dest": "/api/app.py"
     }
   ]

@@ -19,5 +19,15 @@
       "src": "/api/track_player",
       "dest": "/api/app.py"
     }
+    ,
+    {
+      "src": "/api/get_server_spectators",
+      "dest": "/api/app.py"
+    }
+    ,
+    {
+      "src": "/api/get_all_spectators",
+      "dest": "/api/app.py"
+    }
   ]
 }

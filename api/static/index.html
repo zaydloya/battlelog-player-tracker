@@ -278,7 +278,7 @@
                     </div>
                 </div>
             </div>
-            <input type="text" id="playerInput" placeholder="Enter player name or Battlelog profile link">
+            <input type="text" id="playerInput" placeholder="Enter player name or Battlelog profile link. Seperate multiple entries with a comma (,).">
             <div id="playerResult" class="result"></div>
         </div>
 
@@ -392,40 +392,34 @@
             container.innerHTML = '';
             console.log(data)
 
-            if (typeof data === 'string') {
-                const resultDiv = document.createElement('div');
-                resultDiv.className = 'result-box';
-                resultDiv.innerHTML = `<p><i class="fa-solid fa-triangle-exclamation fa-beat" style="color: #dd1d4d;"></i><strong> Error: </strong> ${data}</p>`;
-                container.appendChild(resultDiv);
-                container.style.display = 'block';
-                return;
-            }
-
-            if (Array.isArray(data)) {
-                if (!data[0]) {
+            if (Array.isArray(data) && data.length > 0) {
+                data.forEach(result => {
                     const resultDiv = document.createElement('div');
                     resultDiv.className = 'result-box';
-                    resultDiv.innerHTML = `<p><i class="fa-solid fa-triangle-exclamation fa-beat" style="color: #dd1d4d;"></i><strong> Error: </strong> ${data[1]}</p>`;
+
+                    if (!result[0]) {
+                        resultDiv.innerHTML = `
+                            <p><i class="fa-solid fa-triangle-exclamation fa-beat" style="color: #dd1d4d;"></i><strong> Error: </strong> ${result[1]}</p>
+                        `;
+                    } else {
+                        const playerData = result[1];
+                        const serverName = playerData.server_name || 'Undefined';
+                        const serverUrl = playerData.server_url || '#';
+                        const playerUrl = playerData.player_url || '#';
+
+                        resultDiv.innerHTML = `
+                            <p><strong><a href="${playerUrl}" target="_blank">${playerData.player_name || 'Unknown Player'}</a></strong> is playing on <strong><a href="${serverUrl}" target="_blank">${serverName}</a></strong> as a <strong>${playerData.role || 'Unknown Role'}</strong></p>
+                        `;
+                    }
                     container.appendChild(resultDiv);
-                    container.style.display = 'block';
-                    return;
-                }
-            }
-
-            if (data && typeof data === 'object') {
-                const serverName = data.server_name || 'Undefined';
-                const serverUrl = data.server_url || '#';
-                const playerUrl = data.player_url || '#';
-
-                const resultDiv = document.createElement('div');
-                resultDiv.className = 'result-box';
-                resultDiv.innerHTML = `
-                    <p><strong><a href="${playerUrl}" target="_blank">${data.player_name || 'Unknown Player'}</a></strong> is playing on <strong><a href="${serverUrl}" target="_blank">${serverName}</a></strong> as a <strong>${data.role || 'Unknown Role'}</strong></p>
-                `;
-                container.appendChild(resultDiv);
+                });
                 container.style.display = 'block';
             } else {
-                container.style.display = 'none';
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'result-box';
+                resultDiv.innerHTML = '<p>No players found.</p>';
+                container.appendChild(resultDiv);
+                container.style.display = 'block';
             }
         }
 

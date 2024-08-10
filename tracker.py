@@ -89,28 +89,45 @@ async def find_player(player_id: int, server_url):
     return False, "Player not found in any server"
 
 
-async def fetch_player(player_id: int):
+async def fetch_player(player_id: int, player_name : str):
     servers = utils.load_servers()
     tasks = [find_player(player_id, server_url) for server_url in servers]
     results = await asyncio.gather(*tasks)
     for result in results:
         if result[0]:
-            return result[1]
-    return False, "Player not found in any server"
+            return result
+    return False, f"{player_name} not found in any server"
 
 
 async def track_player(input_value: str):
-    if not input_value:
-        return False, "Please enter a valid username."
-    if not isinstance(input_value, str):
-        return
-    if utils.validate_url(input_value):
-        is_valid, result = utils.is_valid_battlelog_url(input_value)
-    else:
-        is_valid, result = utils.is_valid_username(input_value)
+    players = input_value.split(',')
+    players = [player.strip() for player in players]
+    tasks = []
+    results = []
+    for player in players:
+        if not player:
+            results.append((False, f"Please enter a valid username. {player}"))
+            continue
+        if not isinstance(player, str):
+            results.append((False, f"Invalid input type. "))
+            continue
+        if utils.validate_url(player):
+            is_valid, result = utils.is_valid_battlelog_url(player)
+        else:
+            is_valid, result = utils.is_valid_username(player)
 
-    if not is_valid:
-        return result
+        if not is_valid:
+            results.append((False, result))
+        else:
+            tasks.append(fetch_player(int(result), player))
 
-    player_id = int(result)
-    return await fetch_player(player_id)
+    task_results = await asyncio.gather(*tasks)
+    results.extend(task_results)
+    return results
+
+async def main():
+    players = "17341327, digfreiogwoigwgrwhe"
+    results = await track_player(players)
+    print(results)
+
+asyncio.run(main())

@@ -28,7 +28,8 @@ async def get_server_spectators(server_url: str):
     ]
 
     if not spectators:
-        return True, {"spectators": "Spectator could not be determined", "server_name": server_name, "server_url": server_url}
+        return True, {"spectators": "Spectator could not be determined", "server_name": server_name,
+                      "server_url": server_url}
 
     return True, {"spectators": spectators, "server_name": server_name, "server_url": server_url}
 
@@ -69,47 +70,65 @@ async def check_server_availability(server_url: str):
         return False, "Invalid JSON response from server"
 
 
-async def find_player(player_id: int, server_url):
-    is_available, result = await check_server_availability(server_url)
-    if not is_available:
-        return False, result
-    else:
-        server_data = result
+async def get_players(server):
+    async with aiohttp.ClientSession() as session:
+        try:
+            data = await fetch(session, utils.get_server_json_url(server))
 
-    server_name = utils.get_server_name(server_data)
+            if data.get('type') == 'error':
+                return []
+            elif utils.check_if_players(data):
+                return [(player, server, utils.get_server_name(data)) for player in
+                        data.get('message').get('SERVER_PLAYERS')]
 
-    if utils.check_if_players(server_data):
-        for player in server_data.get('message').get('SERVER_PLAYERS'):
-            if int(player.get('personaId')) == player_id:
-                username = utils.get_player_name(player)
-                role = utils.get_player_role(player)
-                player_url = utils.get_player_url(player)
-                return True, {'player_name': username, 'player_url': player_url, 'server_name': server_name, 'server_url': server_url, 'role': role}
-
-    return False, "Player not found in any server"
+        except aiohttp.ClientResponseError as e:
+            return []
+        except Exception as e:
+            return []
 
 
-async def fetch_player(player_id: int, player_name : str):
+async def find_players(valid_players):
     servers = utils.load_servers()
-    tasks = [find_player(player_id, server_url) for server_url in servers]
-    results = await asyncio.gather(*tasks)
-    for result in results:
-        if result[0]:
-            return result
-    return False, f"{player_name} not found in any server"
+    tasks = []
+    for server in servers:
+        tasks.append(get_players(server))
+
+    active_players = await asyncio.gather(*tasks)
+    active_players = [player for server_players in active_players if server_players is not None for player in
+                      server_players]
+
+    results = []
+
+    for player_id, player_name in valid_players:
+        found = False
+        for player in active_players:
+            if int(player[0].get('personaId')) == player_id:
+                results.append((True, {
+                    'username': utils.get_player_name(player[0]),
+                    'role': utils.get_player_role(player[0]),
+                    'player_url': utils.get_player_url(player[0]),
+                    'server': player[1],
+                    'server_name': player[2],
+                }))
+                found = True
+                break
+        if not found:
+            results.append((False, {'error': "Player not found in any server"}))
+
+    return results
 
 
-async def track_player(input_value: str):
+async def validate(input_value: str):
     players = input_value.split(',')
     players = [player.strip() for player in players]
-    tasks = []
+    valid = []
     results = []
     for player in players:
         if not player:
             results.append((False, f"Please enter a valid username. {player}"))
             continue
         if not isinstance(player, str):
-            results.append((False, f"Invalid input type. "))
+            results.append((False, f"Invalid input type."))
             continue
         if utils.validate_url(player):
             is_valid, result = utils.is_valid_battlelog_url(player)
@@ -119,15 +138,12 @@ async def track_player(input_value: str):
         if not is_valid:
             results.append((False, result))
         else:
-            tasks.append(fetch_player(int(result), player))
+            valid.append((int(result), player))
 
-    task_results = await asyncio.gather(*tasks)
-    results.extend(task_results)
-    return results
+    return results, valid
 
-async def main():
-    players = "17341327, digfreiogwoigwgrwhe"
-    results = await track_player(players)
-    print(results)
 
-asyncio.run(main())
+async def track_player(input_value: str):
+    validation_results, valid_players = await validate(input_value)
+    tracked_players = await find_players(valid_players)
+    return validation_results + tracked_players

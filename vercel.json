@@ -8,6 +8,10 @@
     {
       "src": "api/static/index.html",
       "use": "@vercel/static"
+    },
+    {
+      "src": "fonts/*",
+      "use": "@vercel/static"
     }
   ],
   "routes": [

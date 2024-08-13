@@ -396,8 +396,9 @@
                     resultDiv.className = 'result-box';
 
                     if (!result[0]) {
+
                         resultDiv.innerHTML = `
-                            <p><i class="fa-solid fa-triangle-exclamation fa-beat" style="color: #dd1d4d;"></i><strong> Error: </strong> ${result[1]}</p>
+                            <p><i class="fa-solid fa-triangle-exclamation fa-beat" style="color: #dd1d4d;"></i><strong> Error: </strong> ${result[1].error}</p>
                         `;
                     } else {
                         const playerData = result[1];

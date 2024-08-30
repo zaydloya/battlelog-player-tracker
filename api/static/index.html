@@ -24,7 +24,7 @@
 
         body {
             font-family: 'Eurostile', sans-serif;
-            background-color: #1d2a35;
+            background-color: transparent;
             color: #fff;
             margin: 0;
             padding: 0;
@@ -37,6 +37,16 @@
             background-color: #161e2c;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+        }
+
+        #background-video {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          z-index: -1;
         }
 
         h1 {
@@ -251,6 +261,11 @@
     <title>Battlelog Tracker</title>
 </head>
 <body>
+    <video id="background-video" loop autoplay muted>
+        <source src="https://eaassets-a.akamaihd.net/battlelog/background-videos/bg-video.webm" type="video/webm">
+        <source src="https://eaassets-a.akamaihd.net/battlelog/background-videos/bg-video.ogg" type="video/ogg">
+        <source src="https://eaassets-a.akamaihd.net/battlelog/background-videos/bg-video.mp4" type="video/mp4">
+    </video>
     <div class="container">
         <h1>Battlelog Tracker</h1>
 

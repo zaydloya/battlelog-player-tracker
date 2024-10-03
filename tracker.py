@@ -123,22 +123,23 @@ async def validate(input_value: str):
     players = [player.strip() for player in players]
     valid = []
     results = []
-    for player in players:
-        if not player:
-            results.append((False, f"Please enter a valid username. {player}"))
-            continue
-        if not isinstance(player, str):
-            results.append((False, f"Invalid input type."))
-            continue
-        if utils.validate_url(player):
-            is_valid, result = utils.is_valid_battlelog_url(player)
-        else:
-            is_valid, result = utils.is_valid_username(player)
+    async with aiohttp.ClientSession() as session:
+        for player in players:
+            if not player:
+                results.append((False, {'error': f"Please enter a valid username. {player}"}))
+                continue
+            if not isinstance(player, str):
+                results.append((False, {'error': f"Invalid input type."}))
+                continue
+            if utils.validate_url(player):
+                is_valid, result = await utils.is_valid_battlelog_url(player, session)
+            else:
+                is_valid, result = await utils.is_valid_username(player, session)
 
-        if not is_valid:
-            results.append((False, result))
-        else:
-            valid.append((int(result), player))
+            if not is_valid:
+                results.append((False, result))
+            else:
+                valid.append((int(result), player))
 
     return results, valid
 

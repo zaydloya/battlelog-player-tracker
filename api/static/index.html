@@ -2,6 +2,11 @@
 <html lang="en">
 <head>
     <script src="https://kit.fontawesome.com/43241ba925.js" crossorigin="anonymous"></script>
+    <link rel="preload" href="https://eaassets-a.akamaihd.net/battlelog/background-videos/bg-video.webm" as="video">
+    <link rel="preload" href="https://eaassets-a.akamaihd.net/battlelog/background-videos/bg-video.ogg" as="video">
+    <link rel="preload" href="https://eaassets-a.akamaihd.net/battlelog/background-videos/bg-video.mp4" as="video">
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -24,7 +29,7 @@
 
         body {
             font-family: 'Eurostile', sans-serif;
-            background-color: transparent;
+            background-color: #1d2a35;
             color: #fff;
             margin: 0;
             padding: 0;
@@ -47,6 +52,11 @@
           height: 100%;
           object-fit: cover;
           z-index: -1;
+          transition: opacity 0.2s ease;
+        }
+
+        #background-video.loaded {
+          opacity: 0.8;
         }
 
         h1 {
@@ -520,6 +530,10 @@
                 clearInterval(getSpectatorsLiveInterval);
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+          document.getElementById('background-video').classList.add('loaded');
+        });
 
         document.getElementById('trackPlayerButton').addEventListener('click', fetchTrackPlayer);
         document.getElementById('getSpectatorsButton').addEventListener('click', fetchSpectators);

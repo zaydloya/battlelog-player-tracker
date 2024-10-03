@@ -1,6 +1,5 @@
 import json
 import re
-import requests
 import os
 from dotenv import load_dotenv
 
@@ -24,7 +23,7 @@ def check_if_players(server_json: dict):
     return bool(players_count)
 
 
-def is_valid_username(username: str):
+async def is_valid_username(username: str, session):
     load_dotenv()
     url = f'https://bf4db.com/api/player/{username}/search'
     params = {
@@ -35,8 +34,8 @@ def is_valid_username(username: str):
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }
-    response = requests.request('GET', url, headers=headers, params=params)
-    data = response.json()
+    async with session.get(url, headers=headers, params=params) as response:
+        data = await response.json()
     for player in data.get('data'):
         if player['name'].lower() == username.lower():
             return True, player.get('id')
@@ -46,7 +45,7 @@ def is_valid_username(username: str):
     return False, {'error': "Invalid username provided."}
 
 
-def is_valid_battlelog_url(profile_url: str):
+async def is_valid_battlelog_url(profile_url: str, session):
     load_dotenv()
     if validate_battlelog_url(profile_url):
         persona_id = get_id(profile_url)
@@ -59,15 +58,15 @@ def is_valid_battlelog_url(profile_url: str):
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         }
-        response = requests.request('GET', url, headers=headers, params=params)
-        data = response.json()
+        async with session.get(url, headers=headers, params=params) as response:
+            data = await response.json()
         if 'message' in data and data.get('message', None) or data.get('data').get(
                 'name') == 'ERROR: Failed To Load Name':
-            return False, "Invalid Battlelog URL provided"
+            return False, {'error': "Invalid Battlelog URL provided"}
         else:
             return True, data.get('data').get('player_id')
     else:
-        return False, "Invalid Battlelog URL provided."
+        return False, {'error': "Invalid Battlelog URL provided"}
 
 
 def get_server_json_url(server_url: str):

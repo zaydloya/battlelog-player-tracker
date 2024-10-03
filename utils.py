@@ -41,9 +41,9 @@ def is_valid_username(username: str):
         if player['name'].lower() == username.lower():
             return True, player.get('id')
     if not data.get('data'):
-        return False, f"{username} does not exist. Please try again."
+        return False, {'error': f"{username} does not exist. Please try again."}
 
-    return False, "Invalid username provided."
+    return False, {'error': "Invalid username provided."}
 
 
 def is_valid_battlelog_url(profile_url: str):
